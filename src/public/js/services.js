@@ -6,14 +6,21 @@ angular.module('pocServices', ['ngResource']).factory('Beneficiary', function($r
 	});*/
 }); 
 
-
+var rootService = "http://localhost:9200";
 
 
 angular.module('quickcookingService', ['ng']).factory('Store', function($http) {
 	return  {
 		put : function(data) {
-			return $http.post("http://localhost:9200/recettes/misc", data);
+			return $http.post(rootService+"/recettes/misc", data);
 		},
+		remove: function(id) {
+			return $http.delete(rootService+"/recettes/misc/"+id);
+		},
+		get : function(id) {
+			return $http.get(rootService+"/recettes/misc/"+id);
+		},
+
 		search: function(criteria) {
 
 			var params = {
@@ -33,7 +40,7 @@ angular.module('quickcookingService', ['ng']).factory('Store', function($http) {
 				*/
 			};
 
-			return $http.post("http://localhost:9200/recettes/misc/_search?pretty=true", params);	
+			return $http.post(rootService+"/recettes/misc/_search?pretty=true", params);	
 		}
 	}
 })

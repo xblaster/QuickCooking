@@ -12,6 +12,7 @@ function($routeProvider) {
 
 	$routeProvider.when('/', {templateUrl: 'partials/index.html', controller : IndexCtrl})
 	.when('/add', {templateUrl : 'partials/add.html', controller: AddCtrl})
+	.when('/edit/:id', {templateUrl : 'partials/add.html', controller: EditCtrl})
 	//.when('/avoir/:id', {templateUrl : 'partials/detailAvoir.html', controller: AvoirDetailCtrl})
 	.otherwise({
 		redirectTo : '/'

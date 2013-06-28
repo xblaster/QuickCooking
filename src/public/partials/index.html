@@ -12,7 +12,10 @@
 		<input type="text" ng-model="queryP" ng-change="search(queryP)" class="span9" placeholder="search"/>
 
 		<div ng-repeat="elt in result" class="result">
-				<h4>{{elt.title}}</h4>
+				<h4>{{elt.title}} 
+						<a href="#/edit/{{elt._id}}"><i class="icon-pencil"></i></a>
+						<a ng-click="remove(elt._id)"><i class="icon-trash"></i></a>
+				</h4>
 				<div ng-repeat="hl in elt.highlights">
 
 					<p ng-bind-html-unsafe="hl"></p>
