@@ -1,0 +1,25 @@
+<div class="row hero-unit"  >
+	<div class="span8">
+		<h1><i class="icon-star"></i> Quick cooking</h1>
+		<p>Trouver rapidement votre recette !</p>
+	</div>
+</div>
+
+<div class="row">
+
+	<div class="span12">
+
+		<input type="text" ng-model="queryP" ng-change="search(queryP)" class="span9" placeholder="search"/>
+
+		<div ng-repeat="elt in result" class="result">
+				<h4>{{elt.title}}</h4>
+				<div ng-repeat="hl in elt.highlights">
+
+					<p ng-bind-html-unsafe="hl"></p>
+				</div>
+		</div>
+		<p>
+	 		<a href="#/add" class="btn btn-primary btn-large">Ajouter une recette</a>
+ 		</p>
+ 	</div>
+</div>
