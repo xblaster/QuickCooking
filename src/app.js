@@ -23,7 +23,7 @@ app.configure(function(){
   app.use(express.compress());
   app.use(express.logger('dev'));
   //app.use(express.static(__dirname+"/public", {maxAge: 60*60*24}));
-  //app.use(express.bodyParser());
+  app.use(express.bodyParser());
   //app.use(express.methodOverride());
   app.use(express.cookieParser('your secret here'));
   app.use(express.session());
@@ -57,3 +57,252 @@ server.listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));
 });
 
+/** service part */
+
+app.get('/add' , function(req, res) {
+  addElt(req.query, res);
+});
+
+app.post('/add', function(req,res) {
+  addElt(req.body, res);
+});
+
+function addElt(param, res) {
+    var result = res;
+
+    param.id = param.id || Math.random()*9999999;
+    delete param._version_;
+    //param.id="toto1332323";
+
+      /*jsonObject = JSON.stringify({
+        "add": {
+          "doc": param
+          }
+        ,
+          "commit": {}
+      });*/
+
+    jsonObject = JSON.stringify([ param]);
+    console.log("add ----------------------");
+    console.log(param);
+
+    var postheaders= {
+      'Content-Type': 'application/json',
+      'Content-Length' : Buffer.byteLength(jsonObject, 'utf8')
+    };
+
+    var options = {
+      host: 'localhost',
+      port: 8983,
+      path: '/solr/update?commit=true', //or recettes/misc
+      method: 'POST',
+      headers: postheaders
+    }
+
+    var httpReq = http.request(options, function(resP) {
+      //console.log(res);
+
+      resP.on('data', function(d) {
+        console.info(d.toString());
+        result.send(d);
+      })
+    });
+
+    httpReq.write(jsonObject+",");
+    httpReq.end();
+
+    httpReq.on('error', function(e) {
+      console.error(e);
+    });
+
+
+};
+
+
+app.post('/delete', function(req,res) {
+  delElt(req.body.id, res);
+});
+
+function delElt(id, res) {
+    var result = res;
+
+    
+    jsonObject = JSON.stringify({"delete": {"id":id}});
+    console.log("delete "+id+"----------------------");
+
+    var postheaders= {
+      'Content-Type': 'application/json',
+      'Content-Length' : Buffer.byteLength(jsonObject, 'utf8')
+    };
+
+    var options = {
+      host: 'localhost',
+      port: 8983,
+      path: '/solr/update?commit=true', //or recettes/misc
+      method: 'POST',
+      headers: postheaders
+    }
+
+    var httpReq = http.request(options, function(resP) {
+      //console.log(res);
+
+      resP.on('data', function(d) {
+        console.info(d.toString());
+        result.send(d);
+      })
+    });
+
+    httpReq.write(jsonObject+",");
+    httpReq.end();
+
+    httpReq.on('error', function(e) {
+      console.error(e);
+    });
+
+
+};
+
+//////////////var retrieve a suggesiton
+app.get('/suggest', function (req, res) {
+  //http://localhost:8983/solr/terms?terms.fl=recette&omitHeader=true&wt=json
+  var params = "terms.fl=recette&terms.prefix="+encodeURIComponent(req.query.q);
+
+  params+="&omitHeader=true&wt=json";
+
+    console.log(params);
+
+    var myRequest = this;
+
+    var postheaders= {
+      'Content-Type': 'application/json'//,
+    };
+
+    var options = {
+      host: 'localhost',
+      port: 8983,
+      path: '/solr/terms?'+params,
+      method: 'GET',
+      headers: postheaders
+    }
+
+    var httpReq = http.request(options, function(resP) {
+      //console.log(res);
+
+      resP.on('data', function(d) {
+        console.info(d.toString());
+
+        res.set('Content-Type','application/json');
+        res.set('Accept', 'application/json, text/plain');
+        res.send(200, d);
+      })
+    });
+
+    //httpReq.write(jsonObject+",");
+    httpReq.end();
+
+    httpReq.on('error', function(e) {
+      console.error(e);
+    });
+
+    return httpReq;
+});
+
+////////////// var search value
+app.get('/search', function(req,res) {
+
+    
+    req.query.indent=true;
+    var  params = _.map(req.query, function(value, key, list) {
+      return key+"="+encodeURIComponent(value);
+    }).join("&");
+
+    params+="&wt=json";
+
+    console.log(params);
+
+    var myRequest = this;
+
+    var postheaders= {
+      'Content-Type': 'application/json'//,
+      //'Content-Length' : Buffer.byteLength(jsonObject, 'utf8')
+    };
+
+    console.log( '/solr/spell?'+params);
+
+    var options = {
+      host: 'localhost',
+      port: 8983,
+      path: '/solr/spell?'+params, //or recettes/misc
+      method: 'GET',
+      headers: postheaders
+    }
+
+    var httpReq = http.request(options, function(resP) {
+      //console.log(res);
+
+      resP.on('data', function(d) {
+        console.info(d.toString());
+
+        res.set('Content-Type','application/json');
+        res.set('Accept', 'application/json, text/plain');
+        res.send(200, d);
+      })
+    });
+
+    //httpReq.write(jsonObject+",");
+    httpReq.end();
+
+    httpReq.on('error', function(e) {
+      console.error(e);
+    });
+
+    return httpReq;
+});
+
+////////////: retrieve value
+app.get('/get', function(req,res) {
+
+    
+    var params = "id="+encodeURIComponent(req.query.id);
+    params+="&wt=json";
+
+    console.log(params);
+
+    var myRequest = this;
+
+    var postheaders= {
+      'Content-Type': 'application/json'//,
+    };
+
+    console.log( '/solr/select?'+params);
+
+    var options = {
+      host: 'localhost',
+      port: 8983,
+      path: '/solr/get?'+params, //or recettes/misc
+      method: 'GET',
+      headers: postheaders
+    }
+
+   var httpReq = http.request(options, function(resP) {
+      //console.log(res);
+
+      resP.on('data', function(d) {
+        console.info(d.toString());
+
+        res.set('Content-Type','application/json');
+        res.set('Accept', 'application/json, text/plain');
+        res.send(200, d);
+      })
+    });
+   
+
+    //httpReq.write(jsonObject+",");
+    httpReq.end();
+
+    httpReq.on('error', function(e) {
+      console.error(e);
+    });
+
+    return httpReq;
+});

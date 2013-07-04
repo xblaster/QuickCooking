@@ -6,41 +6,34 @@ angular.module('pocServices', ['ngResource']).factory('Beneficiary', function($r
 	});*/
 }); 
 
-var rootService = "http://localhost:9200";
+//var rootService = "http://localhost:9200";
+//var rootService = "http://localhost:8983/solr";
+var rootService = "";
 
 
 angular.module('quickcookingService', ['ng']).factory('Store', function($http) {
 	return  {
 		put : function(data) {
-			return $http.post(rootService+"/recettes/misc", data);
+			//var params = {'add': data};
+			params = data;
+			console.log(params);
+			return $http.post(rootService+"/add", params);
 		},
 		remove: function(id) {
-			return $http.delete(rootService+"/recettes/misc/"+id);
+			return $http.post(rootService+"/delete", {"id":id});
 		},
 		get : function(id) {
-			return $http.get(rootService+"/recettes/misc/"+id);
+			//http://localhost:8983/solr/get?id=1234768.7058315673
+			return $http.get(rootService+"/get?id="+id);
 		},
 
 		search: function(criteria) {
 
-			var params = {
-				query: {
-					"query_string" : {
-						"default_field" : "_all",
-						"query": "*"+criteria+"*"
-					}
-				},
+			/*var params = {
+				'q' : criteria
+			};*/
 
-				"highlight" : {
-					"fields": {
-						"content":{}
-					}
-				}
-				/*
-				*/
-			};
-
-			return $http.post(rootService+"/recettes/misc/_search?pretty=true", params);	
+			return $http.get(rootService+"/search?q="+criteria);	
 		}
 	}
 })
