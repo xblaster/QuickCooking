@@ -80,7 +80,7 @@ function parseTxt(data) {
 	addElt(recettes);
 }
 
-fs.readFile("d:\\TOUTf2.txt", {"encoding": "utf8"}, function(err, data) {
+fs.readFile("TOUTf2.txt", {"encoding": "utf8"}, function(err, data) {
 	if(err) {
 		return console.error(err);
 	}
