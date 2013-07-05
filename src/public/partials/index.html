@@ -5,14 +5,14 @@
 	</div>
 </div>-->
 
-<div class="row">
+<div class="row" class="hidden-phone">
 		<div class="span3 pull-right">
 	 		<a href="#/add" class="btn btn-primary"><i class="icon-plus-sign"></i> Ajouter une recette</a>
  		</div>
 
 		<div class="span9">
 			<div class="input-append">
-				<input type="text" ng-model="queryP" ng-change="search(queryP)" class="span8" placeholder="search"/>
+				<input type="text" ng-model="queryP" ng-change="search(queryP)" class="span8" placeholder="search" x-webkit-speech lang="fr"/>
 				<span class="add-on" ng-show="loading">
 						<i class="icon-spin icon-spinner"></i>
 				</span>
@@ -40,12 +40,18 @@
 
 		<table class="table table-bordered table-striped" ng-show="result.length > 0">
 		<tr ng-repeat="elt in result" class="result">
-				<td>
-					<h4>{{elt.title}} 
-							<a href="#/edit/{{elt.id}}"><i class="icon-pencil"></i></a>
-							<a ng-click="remove(elt.id)"><i class="icon-trash"></i></a>
+				<td class="hideable">
+					<div class="pull-right btn-group autohide">
+						<a href="#/view/{{elt.id}}" class="btn "><i class="icon-eye-open"></i></a>
+						<a href="#/edit/{{elt.id}}" class="btn "><i class="icon-pencil"></i></a>
+						<a ng-click="remove(elt.id)" class="btn btn-danger"><i class="icon-trash"></i></a>
+					</div>
+					<h4><a href="#/view/{{elt.id}}">{{elt.title}}</a>
+
+							
 					</h4>
 					<p ng-bind-html-unsafe="elt.recette"></p>
+					<p class="label">{{elt.category}}</p>
 					<div ng-repeat="hl in elt.highlights">
 
 						<p ng-bind-html-unsafe="hl"></p>

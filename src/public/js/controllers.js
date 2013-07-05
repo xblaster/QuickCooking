@@ -93,3 +93,13 @@ var EditCtrl = function(Store, $scope, $routeParams, $location) {
 	}
 }
 
+
+var ViewCtrl = function(Store, $scope, $routeParams, $location) {
+	Store.get($routeParams.id).success(function(data, status, headers, config) {
+		console.log(data);
+			$scope.receip = data.doc;
+	}).error(function (data, status, headers, config) {
+
+	});
+}
+

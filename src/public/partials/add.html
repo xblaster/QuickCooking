@@ -1,10 +1,14 @@
-<h1>Ajoute/Modifier une recette</h1>
+<div class="row">
+	<h1>Ajouter/Modifier une recette</h1>
 
-<form ng-submit="save(receip)">
+	<form ng-submit="save(receip)">
 
-<input type="text" placeholder="Titre" ng-model="receip.title" class="span8"/><br/>
+		<input type="text" placeholder="Titre" ng-model="receip.title" class="span8"/><br/>
 
-<textarea ng-model="receip.recette" class="span8" style="height: 300px"></textarea><br/>
-
-<input type="submit" value="Sauvegarder" class="btn btn-primary"/>
-</form>
+		<textarea ng-model="receip.recette" class="span8" style="height: 300px"></textarea><br/>
+		<div class="span8">
+			<input type="submit" value="Sauvegarder" class="pull-right btn btn-primary btn-large"/>
+			<a href="#/" class="btn btn-large">Back</a>
+		</div>
+	</form>
+</div>

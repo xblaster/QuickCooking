@@ -8,7 +8,8 @@ var express = require('express')
   , http = require('http')
   , https = require('https')
 
-  , path = require('path');
+  , path = require('path')
+  , request = require('request')
 
 var app = express();
 var url = require('url');
@@ -216,7 +217,7 @@ app.get('/search', function(req,res) {
       return key+"="+encodeURIComponent(value);
     }).join("&");
 
-    params+="&wt=json";
+    params+="&wt=json";//&df=recetteEtTitle";
 
     console.log(params);
 
@@ -232,31 +233,42 @@ app.get('/search', function(req,res) {
     var options = {
       host: 'localhost',
       port: 8983,
-      path: '/solr/spell?'+params, //or recettes/misc
+      //path: '/solr/spell?'+params, //or recettes/misc
+      path: '/solr/select?'+params, //or recettes/misc
       method: 'GET',
       headers: postheaders
     }
 
-    var httpReq = http.request(options, function(resP) {
+    /*var httpReq = http.request(options, function(resP) {
       //console.log(res);
 
       resP.on('data', function(d) {
         console.info(d.toString());
-
-        res.set('Content-Type','application/json');
-        res.set('Accept', 'application/json, text/plain');
-        res.send(200, d);
+        try {
+          res.set('Content-Type','application/json');
+          res.set('Accept', 'application/json, text/plain');
+          res.send(200, d);
+        }
+        catch (e) {
+          console.error(e);
+        }
       })
+    });*/
+    //var rq = request('http://localhost:8983/solr/select?'+params, function(error, responde, body) {
+      var rq = request('http://localhost:8983/solr/spell?'+params, function(error, responde, body) {
+          console.log(error);
+          console.log(responde);
+          console.log(body);
+          res.set('Content-Type','application/json');
+          res.set('Accept', 'application/json, text/plain');
+          res.send(200, body);
     });
+
+
+    
 
     //httpReq.write(jsonObject+",");
-    httpReq.end();
-
-    httpReq.on('error', function(e) {
-      console.error(e);
-    });
-
-    return httpReq;
+    return rq;
 });
 
 ////////////: retrieve value
