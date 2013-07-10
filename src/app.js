@@ -10,6 +10,7 @@ var express = require('express')
 
   , path = require('path')
   , request = require('request')
+  , fs = require('fs');
 
 var app = express();
 var url = require('url');
@@ -24,12 +25,13 @@ app.configure(function(){
   app.use(express.compress());
   app.use(express.logger('dev'));
   //app.use(express.static(__dirname+"/public", {maxAge: 60*60*24}));
-  app.use(express.bodyParser());
+  app.use(express.bodyParser({keepExtensions: true, uploadDir: __dirname+"/public/images"}));
   //app.use(express.methodOverride());
   app.use(express.cookieParser('your secret here'));
   app.use(express.session());
   app.use(app.router);
   app.use(require('less-middleware')({ src: __dirname + '/public' }));
+
 
   /*app.use(expressUglify.middleware({ 
     src: __dirname + '/public',
@@ -45,6 +47,15 @@ app.configure(function(){
 
 var server = http.createServer(app);
 
+
+app.post('/upload', function(req, res) {
+  console.log(req.files.uploadfile.name);
+  var temppath = req.files.uploadfile.path;
+  var savepath = "./public/images/"+req.body.filename;
+
+  fs.rename(temppath, savepath);
+
+});
 
 app.configure('development', function(){
   app.use(express.errorHandler());
@@ -233,28 +244,11 @@ app.get('/search', function(req,res) {
     var options = {
       host: 'localhost',
       port: 8983,
-      //path: '/solr/spell?'+params, //or recettes/misc
       path: '/solr/select?'+params, //or recettes/misc
       method: 'GET',
       headers: postheaders
     }
 
-    /*var httpReq = http.request(options, function(resP) {
-      //console.log(res);
-
-      resP.on('data', function(d) {
-        console.info(d.toString());
-        try {
-          res.set('Content-Type','application/json');
-          res.set('Accept', 'application/json, text/plain');
-          res.send(200, d);
-        }
-        catch (e) {
-          console.error(e);
-        }
-      })
-    });*/
-    //var rq = request('http://localhost:8983/solr/select?'+params, function(error, responde, body) {
       var rq = request('http://localhost:8983/solr/spell?'+params, function(error, responde, body) {
           console.log(error);
           console.log(responde);

@@ -7,60 +7,99 @@ var crypto = require("crypto");
 
 var sys = require("sys");
 
+var request = require('request')
+
 var _ = require('lodash');
 
 
 var tesseractBin = "\"C:\\Program Files (x86)\\Tesseract-OCR\\tesseract.exe\"";
+var gsbin = "\"C:\\Program Files (x86)\\gs\\gs9.07\\bin\\gswin32c.exe\"";
 
-var imgpath = process.argv[2];
+var pdfpath = process.argv[2];
 
-console.log("process img "+imgpath);
+console.log("process pdf "+pdfpath);
 
+
+function separatePdf(pdfpath, cb) {
+  var exec = require('child_process').exec,
+    cmd = exec(gsbin+" -dBATCH -dNOPAUSE -dSAFER -sDEVICE=jpeg -dJPEGQ=95 -r600x600 -dPDFFitPage -dFIXEDMEDIA -sOutputFile=%03d.jpg "+pdfpath, function(error, stdout, stderr) {
+      console.log(stdout);
+
+
+
+      if (error) {
+        console.log(stderr);
+        return;
+      }
+
+      cb();
+
+    });
+}
 
 function getSha1OfImg(imgpath, finalCb) {
+  console.log("calculate sha1 of "+imgpath);
+  var cb = finalCb;
+  var shasum = crypto.createHash('sha1');
 
-	var cb = finalCb;
-	var shasum = crypto.createHash('sha1');
+  var s = fs.ReadStream(imgpath);
 
-	var s = fs.ReadStream(imgpath);
+  s.on('data', function(d) {
+    shasum.update(d);
+  });
 
-	s.on('data', function(d) {
-		shasum.update(d);
-	});
+  s.on('end', function() {
 
-	s.on('end', function() {
-		var d = shasum.digest('hex');
-		cb(imgpath, d);
-	});
+    var d = shasum.digest('hex');
+    console.log("calculate sha1 of "+imgpath+" ok");
+    cb(imgpath, d);
+  });
 
 }
 
 
 function constructJson(imgpath, signature, content) {
-	console.log("content = "+content.toString("utf8").substring(0,300));
-	console.log("signature = "+signature);
+  //console.log("content = "+content.toString("utf8").substring(0,300));
+  console.log("signature = "+signature);
+
+  var recette = { 'title' : 'unknown', 
+                  'recette': content.toString("utf8"), 
+                  'category': "scanned",
+                  'id': signature}
+  addElt([recette]);
 
 }
 
 /** process the file **/
 var  ocrFile = function(imgpath, signature) {
 
+ 
+  uploadFile(imgpath, signature);
+  console.log("process "+imgpath);
+  var cmdl = tesseractBin+" "+imgpath+" "+signature+" -l fra";
+  console.log(cmdl);
+  var exec = require('child_process').exec,
+    //cmd = exec("echo lol", function(error, stdout, stderr) {
+    
+    cmd = exec(cmdl, function(error, stdout, stderr) {
+      //console.log("command ok");
+      //console.log(stdout);
 
-	var exec = require('child_process').exec,
-		cmd = exec(tesseractBin+" "+imgpath+" "+signature+" -l fra", function(error, stdout, stderr) {
-			//console.log(stdout);
+      if (error) {
+        console.log(stderr);
+        return;
+      }
 
-			if (error) {
-				console.log(stderr);
-				return;
-			}
+      constructJson(imgpath, signature, fs.readFileSync(signature+".txt"));
+      
+      fs.unlinkSync(signature+".txt");
 
-			constructJson(imgpath, signature, fs.readFileSync(signature+".txt"));
-			fs.unlink(signature+".txt");
+    });
 
-		});
-	
-
+     while(!fs.existsSync(signature+".txt")) {
+        //console.log("wait !");
+      }
+    console.log("traitement ok pour "+imgpath);
 }
 
 
@@ -68,9 +107,9 @@ var  ocrFile = function(imgpath, signature) {
 function addElt(param, res) {
     
     jsonObject = JSON.stringify(param);
-    console.log(jsonObject);
-    console.log("add ----------------------");
-    console.log(param);
+    //console.log(jsonObject);
+    //console.log("add ----------------------");
+    //console.log(param);
 
     var postheaders= {
       'Content-Type': 'application/json',
@@ -103,7 +142,51 @@ function addElt(param, res) {
 };
 
 
+var __list;
+
+
+function removeAllImage() {
+    var l = _.filter(fs.readdirSync("."), function(value) {
+      return value.indexOf("jpg")!=-1});
+    _.map(l, function(value, key, list) {
+        fs.unlinkSync(value);
+    })
+}
+
+function scanAllImage() {
+    __list = _.filter(fs.readdirSync("."), function(value) {
+      return value.indexOf("jpg")!=-1});
+    scanAsync();
+}
+
+function scanAsync() {
+  console.log(" queue "+__list.length);
+  //console.log(__list);
+  var elt = _.head(__list);
+  __list = _.tail(__list);
+  getSha1OfImg(elt, handleValue);            
+  
+  
+}
+
+function uploadFile(imgpath, signature) {
+  console.log('upload file '+imgpath)
+  var r = request.post('http://localhost:3002/upload');
+  var form = r.form();
+  form.append("uploadfile",fs.createReadStream(imgpath));
+  form.append("filename",signature+"_img.jpg");
+
+}
+
+var handleValue = function(imgpath, signature) {
+  ocrFile(imgpath, signature);
+  scanAsync();
+}
+
 // main
 
+removeAllImage();
+separatePdf(pdfpath, scanAllImage);
+removeAllImage();
 
-getSha1OfImg(imgpath, ocrFile);
+//scanAllImage();

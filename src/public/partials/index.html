@@ -46,12 +46,16 @@
 						<a href="#/edit/{{elt.id}}" class="btn "><i class="icon-pencil"></i></a>
 						<a ng-click="remove(elt.id)" class="btn btn-danger"><i class="icon-trash"></i></a>
 					</div>
+
 					<h4><a href="#/view/{{elt.id}}">{{elt.title}}</a>
 
 							
 					</h4>
 					<p ng-bind-html-unsafe="elt.recette"></p>
 					<p class="label">{{elt.category}}</p>
+					<p ng-show="elt.category == 'scanned'">
+						<img src="images/{{elt.id}}_img.jpg" width="600"/>
+					</p>  
 					<div ng-repeat="hl in elt.highlights">
 
 						<p ng-bind-html-unsafe="hl"></p>
