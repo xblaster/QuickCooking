@@ -83,7 +83,7 @@ var  ocrFile = function(imgpath, signature) {
     
     cmd = exec(cmdl, function(error, stdout, stderr) {
       //console.log("command ok");
-      //console.log(stdout);
+      console.log(stdout);
 
       if (error) {
         console.log(stderr);
@@ -108,7 +108,7 @@ function addElt(param, res) {
     
     jsonObject = JSON.stringify(param);
     //console.log(jsonObject);
-    //console.log("add ----------------------");
+    console.log("add ----------------------");
     //console.log(param);
 
     var postheaders= {
@@ -129,8 +129,9 @@ function addElt(param, res) {
 
       resP.on('data', function(d) {
         console.info(d.toString());
-        //result.send(d);
       })
+
+
     });
 
     httpReq.write(jsonObject+",");
@@ -171,10 +172,16 @@ function scanAsync() {
 
 function uploadFile(imgpath, signature) {
   console.log('upload file '+imgpath)
-  var r = request.post('http://localhost:3002/upload');
+  var r = request.post('http://localhost:3002/upload', function(error, response, body) {
+    if (error) {
+      console.error(error);
+    }
+  });
   var form = r.form();
   form.append("uploadfile",fs.createReadStream(imgpath));
   form.append("filename",signature+"_img.jpg");
+
+
 
 }
 
@@ -185,8 +192,8 @@ var handleValue = function(imgpath, signature) {
 
 // main
 
-removeAllImage();
-separatePdf(pdfpath, scanAllImage);
-removeAllImage();
+//removeAllImage();
+//separatePdf(pdfpath, scanAllImage);
+//removeAllImage();
 
-//scanAllImage();
+scanAllImage();
