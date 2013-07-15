@@ -2,6 +2,25 @@
 	margin-top: 4em;
 }
 
+.result-container {
+	column-width : 300px;
+	-webkit-column-width : 300px;
+	-moz-column-width : 300px;
+}
+
+.result {
+	column-break-inside: avoid;
+	-moz-column-break-inside: avoid;
+	-webkit-column-break-inside: avoid;
+	-o-column-break-inside: avoid;
+	-ms-column-break-inside: avoid;
+	margin-bottom: 1em;
+	border: 1px solid #FFF;
+	padding: 1em;
+	box-shadow: inset 0px 1px 5px rgba(0,0,0,0.3);
+	background-color: #F7F7F7;
+}
+
 .result em {
 	background-color: #FF0;
 }

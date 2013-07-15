@@ -16,6 +16,8 @@ var app = express();
 var url = require('url');
 var _ = require('lodash');
 
+var gm = require('gm');
+
 
 app.configure(function(){
   app.set('port', process.env.PORT || 3002);
@@ -47,13 +49,25 @@ app.configure(function(){
 
 var server = http.createServer(app);
 
+var gmResizeCb = function(err, stdout, stderr, command) {
+  console.log(command);
+  if (err) {
+    console.error(stderr);
+  }
+}
 
 app.post('/upload', function(req, res) {
   console.log(req.files.uploadfile.name);
   var temppath = req.files.uploadfile.path;
-  var savepath = "./public/images/"+req.body.filename;
+  var savepath = "./public/images/";
+  var savefile = savepath+req.body.filename;
 
   fs.rename(temppath, savepath);
+
+  gm(savefile).resize(720).write(savepath+"l/"+req.body.filename, gmResizeCb);
+  gm(savefile).resize(500).write(savepath+"m/"+req.body.filename, gmResizeCb);
+  gm(savefile).resize(200).write(savepath+"s/"+req.body.filename, gmResizeCb);
+  gm(savefile).resize(100).write(savepath+"xs/"+req.body.filename, gmResizeCb);
 
 });
 

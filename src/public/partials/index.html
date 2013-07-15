@@ -23,7 +23,7 @@
 
 
 
-<div class="row">
+<div class="row-fluid">
  	<div class="span12">
 		<div ng-show="suggestSpell.length">
 			Suggestion: 
@@ -38,7 +38,7 @@
 				<h3>Aucun résultat</h3>
 		</div>
 
-		<table class="table table-bordered table-striped" ng-show="result.length > 0">
+		<!--<table class="table table-bordered table-striped" ng-show="result.length > 0">
 		<tr ng-repeat="elt in result" class="result">
 				<td class="hideable">
 					<div class="pull-right btn-group autohide">
@@ -54,7 +54,7 @@
 					<p ng-bind-html-unsafe="elt.recette"></p>
 					<p class="label">{{elt.category}}</p>
 					<p ng-show="elt.category == 'scanned'">
-						<img src="images/{{elt.id}}_img.jpg" width="600"/>
+						<img src="images/m/{{elt.id}}_img.jpg"/>
 					</p>  
 					<div ng-repeat="hl in elt.highlights">
 
@@ -62,7 +62,30 @@
 					</div>
 				</td>
 		</tr>
-		</table>
+		</table>-->
+
+		<div class="result-container">
+		<div ng-repeat="elt in result" class="result">
+				<div class="hideable">
+					<div class="pull-right btn-group autohide">
+						<a href="#/view/{{elt.id}}" class="btn "><i class="icon-eye-open"></i></a>
+						<a href="#/edit/{{elt.id}}" class="btn "><i class="icon-pencil"></i></a>
+						<a ng-click="remove(elt.id)" class="btn btn-danger"><i class="icon-trash"></i></a>
+					</div>
+
+					<h4><a href="#/view/{{elt.id}}"  ng-show="elt.category != 'scanned'">{{elt.title}}</a>
+
+							
+					</h4>
+					<p ng-bind-html-unsafe="elt.recette" ng-show="elt.category != 'scanned'"></p>
+					<p ng-show="elt.category == 'scanned'">
+						<a href="#/view/{{elt.id}}"><img src="images/m/{{elt.id}}_img.jpg"/></a>
+					</p>  
+					<p class="label">{{elt.category}}</p>
+					
+				</div>
+		</div>
+		</div>
 		
  	</div>
 </div>
