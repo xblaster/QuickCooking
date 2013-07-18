@@ -307,25 +307,17 @@ app.get('/get', function(req,res) {
       headers: postheaders
     }
 
-   var httpReq = http.request(options, function(resP) {
-      //console.log(res);
 
-      resP.on('data', function(d) {
-        console.info(d.toString());
+   var rq = request('http://localhost:8983/solr/select?'+params, function(error, responde, body) {
 
-        res.set('Content-Type','application/json');
-        res.set('Accept', 'application/json, text/plain');
-        res.send(200, d);
-      })
-    });
-   
+         console.log(error);
+          console.log(responde);
+          console.log(body);
+          res.set('Content-Type','application/json');
+          res.set('Accept', 'application/json, text/plain');
+          res.send(200, body);
 
-    //httpReq.write(jsonObject+",");
-    httpReq.end();
+  }
 
-    httpReq.on('error', function(e) {
-      console.error(e);
-    });
-
-    return httpReq;
+    return rq;
 });
