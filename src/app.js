@@ -59,16 +59,18 @@ var gmResizeCb = function(err, stdout, stderr, command) {
 app.post('/upload', function(req, res) {
   console.log(req.files.uploadfile.name);
   var temppath = req.files.uploadfile.path;
-  var savepath = "./public/images/";
+  var savepath = "public/images/";
   var savefile = savepath+req.body.filename;
 
-  fs.renameSync(temppath, savepath);
+  //fs.renameSync(temppath, savepath);
 
 
-  gm(savefile).resize(720).write(savepath+"l/"+req.body.filename, gmResizeCb);
-  gm(savefile).resize(500).write(savepath+"m/"+req.body.filename, gmResizeCb);
-  gm(savefile).resize(200).write(savepath+"s/"+req.body.filename, gmResizeCb);
-  gm(savefile).resize(100).write(savepath+"xs/"+req.body.filename, gmResizeCb);
+  gm(temppath).resize(720).write(savepath+"l/"+req.body.filename, gmResizeCb);
+  gm(temppath).resize(500).write(savepath+"m/"+req.body.filename, gmResizeCb);
+  gm(temppath).resize(200).write(savepath+"s/"+req.body.filename, gmResizeCb);
+  gm(temppath).resize(100).write(savepath+"xs/"+req.body.filename, gmResizeCb);
+
+  //fs.unlinkSync(temppath);
 
 });
 
