@@ -71,6 +71,7 @@ app.post('/upload', function(req, res) {
   gm(temppath).resize(100).write(savepath+"xs/"+req.body.filename, gmResizeCb);
 
   //fs.unlinkSync(temppath);
+  res.send("ok");
 
 });
 

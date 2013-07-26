@@ -3,6 +3,7 @@ var http = require("http");
 var fs = require('fs');
 var xmldoc = require("xmldoc");
 
+var gm = require('gm');
 
 //var host = "localhost";
 var hosttotal = "cook.lo2k.net:3002";
@@ -178,18 +179,26 @@ function scanAsync() {
 }
 
 function uploadFile(imgpath, signature) {
-  console.log('upload file '+imgpath)
-  var r = request.post('http://'+hosttotal+'/upload', function(error, response, body) {
-    if (error) {
-      console.error("error during upload"+error);
-    }
-  });
-  var form = r.form();
-  form.append("uploadfile",fs.createReadStream(imgpath));
-  form.append("filename",signature+"_img.jpg");
+  console.log('upload file '+imgpath);
+  var newFileName = "signature_"+signature+".jpg";
+  gm(imgpath).resize(720).write(newFileName, onFileResized(newFileName, signature));
+}
 
-
-
+function onFileResized(imgpath, signature) {
+  console.log('uploading file '+imgpath);
+  return function() {
+       var r = request.post('http://'+hosttotal+'/upload', function(error, response, body) {
+        if (error) {
+          console.error("error during upload"+error);
+        }
+        else {
+          console.log('file uploaded ==> '+imgpath);
+        }
+      });
+      var form = r.form();
+      form.append("uploadfile",fs.createReadStream(imgpath));
+      form.append("filename",signature+"_img.jpg");
+  }
 }
 
 var handleValue = function(imgpath, signature) {
@@ -199,8 +208,8 @@ var handleValue = function(imgpath, signature) {
 
 // main
 
-removeAllImage();
+/*removeAllImage();
 separatePdf(pdfpath, scanAllImage);
-removeAllImage();
+removeAllImage();*/
 
-//scanAllImage();
+scanAllImage();
