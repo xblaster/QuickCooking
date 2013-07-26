@@ -208,8 +208,8 @@ var handleValue = function(imgpath, signature) {
 
 // main
 
-/*removeAllImage();
+removeAllImage();
 separatePdf(pdfpath, scanAllImage);
-removeAllImage();*/
+removeAllImage();
 
-scanAllImage();
+//scanAllImage();

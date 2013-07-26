@@ -78,9 +78,14 @@
 							
 					</h4>
 					<p ng-bind-html-unsafe="elt.recette" ng-show="elt.category != 'scanned'"></p>
-					<p ng-show="elt.category == 'scanned'">
-						<a href="#/view/{{elt.id}}"><img src="images/m/{{elt.id}}_img.jpg"/></a>
-					</p>  
+
+ 					<div ng-switch on="elt.category">
+ 						<div ng-switch-when="scanned">
+ 							<a href="#/view/{{elt.id}}"><img src="images/m/{{elt.id}}_img.jpg"/></a>
+ 						</div>
+ 						 <span ng-switch-default></span>
+ 					</div>
+
 					<p class="label">{{elt.category}}</p>
 					
 				</div>
