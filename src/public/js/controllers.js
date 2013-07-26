@@ -77,7 +77,8 @@ var AddCtrl = function(Store, $scope, $location) {
 var EditCtrl = function(Store, $scope, $routeParams, $location) {
 	Store.get($routeParams.id).success(function(data, status, headers, config) {
 		console.log(data);
-			$scope.receip = data.doc;
+		$scope.receip = data.response.docs[0];
+		console.log($scope.receipt);
 	}).error(function (data, status, headers, config) {
 
 	});
@@ -97,7 +98,8 @@ var EditCtrl = function(Store, $scope, $routeParams, $location) {
 var ViewCtrl = function(Store, $scope, $routeParams, $location) {
 	Store.get($routeParams.id).success(function(data, status, headers, config) {
 		console.log(data);
-			$scope.receip = data.doc;
+		$scope.receip = data.response.docs[0];
+		console.log($scope.receipt);
 	}).error(function (data, status, headers, config) {
 
 	});

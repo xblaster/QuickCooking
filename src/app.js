@@ -68,6 +68,7 @@ app.post('/upload', function(req, res) {
   gm(temppath).resize(100).write(savepath+"xs/"+req.body.filename, gmResizeCb);
 
   //fs.unlinkSync(temppath);
+  res.send("ok");
 
 });
 
@@ -238,6 +239,8 @@ app.get('/search', function(req,res) {
 
     
     req.query.indent=true;
+    req.query.start = 0;
+    req.query.rows = 20;
     var  params = _.map(req.query, function(value, key, list) {
       return key+"="+encodeURIComponent(value);
     }).join("&");
@@ -283,7 +286,7 @@ app.get('/search', function(req,res) {
 app.get('/get', function(req,res) {
 
     
-    var params = "id="+encodeURIComponent(req.query.id);
+    var params = "q=id:"+encodeURIComponent(req.query.id);
     params+="&wt=json";
 
     console.log(params);
@@ -307,9 +310,9 @@ app.get('/get', function(req,res) {
 
    var rq = request('http://localhost:8983/solr/select?'+params, function(error, responde, body) {
 
-         console.log(error);
-          console.log(responde);
-          console.log(body);
+         //console.log(error);
+          //console.log(responde);
+          //console.log(body);
           res.set('Content-Type','application/json');
           res.set('Accept', 'application/json, text/plain');
           res.send(200, body);

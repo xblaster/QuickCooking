@@ -1,13 +1,27 @@
 <div class="pull-right">
 		<a href="#/edit/{{elt.id}}"><i class="icon-pencil"></i></a>
 </div>
-<h1>{{receip.title}}</h1>
-<p>
-	<pre>{{receip.recette}}</pre>
-</p>
-
 
 <div>
 	<a href="#/" class="btn btn-large">Back</a>
 </div>
+
+<div ng-switch on="receip.category">
+	<div ng-switch-when="scanned">
+		<img src="images/l/{{receip.id}}_img.jpg"/>
+	</div>
+	 <span ng-switch-default>
+		<h1>{{receip.title}}</h1>
+		
+
+	 </span>
+</div>
+
+<p>
+			<pre>{{receip.recette}}</pre>
+</p>
+
+
+
+
 
