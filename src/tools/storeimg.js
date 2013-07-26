@@ -6,14 +6,16 @@ var xmldoc = require("xmldoc");
 var crypto = require("crypto");
 
 var sys = require("sys");
-
+  
 var request = require('request')
 
 var _ = require('lodash');
 
 
-var tesseractBin = "\"C:\\Program Files (x86)\\Tesseract-OCR\\tesseract.exe\"";
-var gsbin = "\"C:\\Program Files (x86)\\gs\\gs9.07\\bin\\gswin32c.exe\"";
+//var tesseractBin = "\"C:\\Program Files (x86)\\Tesseract-OCR\\tesseract.exe\"";
+var tesseractBin = "tesseract";
+//var gsbin = "\"C:\\Program Files (x86)\\gs\\gs9.07\\bin\\gswin32c.exe\"";
+var gsbin = "ghostscript";
 
 var pdfpath = process.argv[2];
 

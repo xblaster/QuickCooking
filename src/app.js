@@ -62,9 +62,6 @@ app.post('/upload', function(req, res) {
   var savepath = "public/images/";
   var savefile = savepath+req.body.filename;
 
-  //fs.renameSync(temppath, savepath);
-
-
   gm(temppath).resize(720).write(savepath+"l/"+req.body.filename, gmResizeCb);
   gm(temppath).resize(500).write(savepath+"m/"+req.body.filename, gmResizeCb);
   gm(temppath).resize(200).write(savepath+"s/"+req.body.filename, gmResizeCb);
