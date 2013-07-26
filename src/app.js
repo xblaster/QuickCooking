@@ -317,7 +317,7 @@ app.get('/get', function(req,res) {
           res.set('Accept', 'application/json, text/plain');
           res.send(200, body);
 
-  }
+  });
 
     return rq;
 });

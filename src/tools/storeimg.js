@@ -3,6 +3,13 @@ var http = require("http");
 var fs = require('fs');
 var xmldoc = require("xmldoc");
 
+
+//var host = "localhost";
+var hosttotal = "cook.lo2k.net:3002";
+var host = "cook.lo2k.net";
+var hostport = 8983;
+
+
 var crypto = require("crypto");
 
 var sys = require("sys");
@@ -76,7 +83,7 @@ var  ocrFile = function(imgpath, signature) {
  
   uploadFile(imgpath, signature);
   console.log("process "+imgpath);
-  var cmdl = tesseractBin+" "+imgpath+" "+signature+" -l fra";
+  var cmdl = tesseractBin+" "+imgpath+" "+signature+" -l fra -psm 1";
   console.log(cmdl);
   var exec = require('child_process').exec,
     //cmd = exec("echo lol", function(error, stdout, stderr) {
@@ -117,8 +124,8 @@ function addElt(param, res) {
     };
 
     var options = {
-      host: 'localhost',
-      port: 8983,
+      host: host,
+      port: hostport,
       path: '/solr/update?commit=true', //or recettes/misc
       method: 'POST',
       headers: postheaders
@@ -138,7 +145,7 @@ function addElt(param, res) {
     httpReq.end();
 
     httpReq.on('error', function(e) {
-      console.error(e);
+      console.error('add elt '+e);
     });
 };
 
@@ -172,9 +179,9 @@ function scanAsync() {
 
 function uploadFile(imgpath, signature) {
   console.log('upload file '+imgpath)
-  var r = request.post('http://localhost:3002/upload', function(error, response, body) {
+  var r = request.post('http://'+hosttotal+'/upload', function(error, response, body) {
     if (error) {
-      console.error(error);
+      console.error("error during upload"+error);
     }
   });
   var form = r.form();
