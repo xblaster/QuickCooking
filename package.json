@@ -11,10 +11,10 @@
     "less-middleware": "*",
     "socket.io": "*",
     "express-uglify": "*",
-    "lodash": "~1.1.1",
+    "lodash": "~4.17.5",
     "btoa": "~1.1.0",
     "xmldoc": "~0.1.2",
-    "request": "~2.21.0",
+    "request": "~2.82.0",
     "gm": "~1.10.0"
   },
   "devDependencies": {
